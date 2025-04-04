@@ -6,7 +6,9 @@ import com.cardio_generator.outputs.OutputStrategy;
 
 public class AlertGenerator implements PatientDataGenerator {
 
-    public static final Random RANDOM_GENERATOR = new Random(); //constant
+    public static final Random RANDOM_GENERATOR = new Random(); //This is a constant
+
+    // Changed variable name to lower camelCase
     private boolean[] alertStates; // false = resolved, true = pressed
 
     public AlertGenerator(int patientCount) {
@@ -23,8 +25,12 @@ public class AlertGenerator implements PatientDataGenerator {
                     outputStrategy.output(patientId, System.currentTimeMillis(), "Alert", "resolved");
                 }
             } else {
+
+                // Changed this to a lower camel case
                 double lambda = 0.1; // Average rate (alerts per period), adjust based on desired frequency
+                // Changed this to a lower camel case
                 double alertProbability = -Math.expm1(-lambda); // Probability of at least one alert in the period
+                // Changed this to a lower camel case
                 boolean alertTriggered = RANDOM_GENERATOR.nextDouble() < alertProbability;
 
                 if (alertTriggered) {
