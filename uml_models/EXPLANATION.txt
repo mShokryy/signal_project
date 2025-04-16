@@ -1,0 +1,60 @@
+-----------------------------------------------------------------
+
+#1 CLASS
+
+This diagram represents an alert system which is designed for monitoring the patient's data and generating alerts based on the given thresholds. 
+
+At the core of the system is the AlertGenerator class, which evaluates patient vital signs and decides when to trigger an alert. This depends on three key collaborators: DataStorage, ThresholdManager and AlertManager. This allows AlertGenerator class to access the data while keeping an eye on the threshold and then handle the alerts, keep note that the threshold can be set/ changed to a personalized choice.
+
+Meanwhile DataStorage is responsible for retrieving Patient objects, which contain identifiers and a MAP
+this keeps patient information private and easily accessible for us. ThresholdManager is modeled as an interface, allowing different implementations which promotes flexibility.
+
+The Alert Class is a simple data holder, used to encapsulate alert information, Once an alert is generated it is passed to AlertManager, which handles dispatching the error to the staff and noting what happened/incident that occurred 
+
+Overall, everything is clean, maintainable, extendable and connected I think the system is fairly easy to understand.
+
+-------------------------------------------------------------------
+
+#2 CLASS 
+
+This UML diagram aims to support , secure , organize and handle the patient's health from the data collected. DataStorage is the center of operations, which acts as the head for storing and retrieving patient data. it maintains a map of Patient objects marked by unique patient IDs, ensuring fast access and secured information.
+
+Each Patient object maintains a list of PatientRecord entries, which are data points that include the measurement value, recorded type like the heart rate for example, and a timestamp for accurate historical tracking of them, the timestamped structure supports both real time and visual analysis meeting medical and analytical needs.
+
+The DataRetriever interface in the UML diagram is to illustrate how the medical staff would interact with the system. It defines access for querying patient records within a specified time range, it promotes future extensibility and as well deletion/insertion of old records.
+
+The data deletion method are enabled by a deleteOldRecords method that removes outdates entries, optimizing performance.
+
+Access control is implied via encapsulation and would be enforced at the interface level to ensure only authorized personnel can access sensitive data and again everything is extendable and connected ensuring that everything is easily maintainable.
+
+-----------------------------------------------------------------------
+
+#3 CLASS
+
+This UML diagram represents Patient Identification System designed to securely match and manage patient data from external sources ( aka SIMULATORS) with given hospital internal records.
+The system is made up with 4 classes [ Patient , PatientRecord , PatientIdentifier, and IdentityManager].
+
+The Patient class encapsulates the in-body (information), like patientId and maintains a collection of PatientRecord instances, like heart rate.
+This ensures efficient grouping and retrieval of patient's history.
+
+As for PatientRecord serves as quick data to represent individual patients data tied to a every patient. It includes data like measurements, timestamp, values, clinical timelines etc..
+
+PatientIdentifier acts as the matching logic. it makes sure if an incoming ID is valid and corresponds to an existing Patient, since it attempts to match each incoming ID to at most one known Patient.
+
+The IdentityManager is the controller class. it owns a PatientIdentifier (composition) and manages the system's database of patients. It successfuly handles matches, and retrieves patient data, and also manages edge cases such as mismatches, logging and raising alerts too.
+
+So each class handles a distinct concern: data storage, identity matching, and system coordination, which promotes clarity and supports future implementations for this eco system.
+
+----------------------------------------------------------------------------
+
+#4 CLASS
+
+This UML diagram focuses on Data Access Layer which supports multiple data input sources (TCP, WebSocket and File) at the top of all of this is DataListener interface which defines a common listen() method, which is implemented by TCPDataListener, WebSocketDataListener, and FileDataListener. This allows the system to use multiple types of data listeners in the future.
+
+Each data listener recieves raw input and passes it to the DataParser class. This parser converts raw strings into structured DataObject instances, The use of a parsers helps reduce duplications across all listener types.
+
+Parsed data is then haldned by DataSourceAdapter which acts as a bridge between parsed data and the system's data model, This adapters gives valid data to the DataStorage which is responsible for storing and retrieving patient relevant data.
+
+DataStorage maintains a Map<Integer, Patient> to efficiently store and retrieve patient records at any time. The patient class uses the encapsulation funcationality for the patient's medical data and provides the methods to add new records or filter them. Each patient can have multiple Records of course and this reflects the nature of healthcare monitoring.
+
+So overall this diagram helps taking multiple inputs and parses it and sends it to storage while supporting encapsulation, future implementations and expansions.

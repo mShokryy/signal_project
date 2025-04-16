@@ -67,3 +67,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Project Members
 - Student ID: 6382223
 
+
+## UML Models
+
+The UML class diagram and accompanying design explanation for this project can be found in the [`uml_models`](./uml_models) directory.
+
+- [DataGenerator_UML_ClassDiagram.pdf](./uml_models/DataGenerator_UML_ClassDiagram.pdf)
+- [EXPLANATION.txt](./uml_models/EXPLANATION.txt)
+
