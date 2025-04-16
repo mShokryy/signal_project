@@ -35,7 +35,7 @@ public class AlertGenerator implements PatientDataGenerator {
     /**
      * Generates alert data for a specific patient.
      * If an alert is currently active, there's a 90% to resolve.
-     * Otherwise an alert can be triggered.
+     * otherwise an alert will be triggered.
      *
      * @param patientId the ID of the patient in which the data is being generated and is unique.
      * @param outputStrategy is used for outputting the generated data.
