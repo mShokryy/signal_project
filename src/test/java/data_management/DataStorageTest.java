@@ -1,27 +1,42 @@
 package data_management;
 
-import static org.junit.jupiter.api.Assertions.*; // Use JUnit 5 Assertions
-import org.junit.jupiter.api.Test;
-
 import com.data_management.DataStorage;
 import com.data_management.PatientRecord;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * This test class verifies the functionality of the DataStorage class.
+ * It tests the ability to store patient data and retrieve it based on ID and time range.
+ *
+ * Assumptions:
+ * - getRecords() returns all records for a patient ID within the specified time range (inclusive).
+ * - The storage does not filter by record type (e.g., "WhiteBloodCells") during retrieval.
+ */
 class DataStorageTest {
 
+    /**
+     * Tests that records can be added and retrieved correctly.
+     * Verifies both the number of records and their measurement values.
+     */
     @Test
     void testAddAndGetRecords() {
-        // Assuming you have some way to create or mock a DataReader
-        // DataReader reader = mock(DataReader.class); // Uncomment if using a mock reader
-        /*
-        DataStorage storage = new DataStorage(reader); // Pass reader here
+        DataStorage storage = new DataStorage();
+
+        // * Add two records for the same patient
         storage.addPatientData(1, 100.0, "WhiteBloodCells", 1714376789050L);
         storage.addPatientData(1, 200.0, "WhiteBloodCells", 1714376789051L);
 
+        // * Retrieve records within the timestamp range
         List<PatientRecord> records = storage.getRecords(1, 1714376789050L, 1714376789051L);
-        assertEquals(2, records.size()); // Check if two records are retrieved
-        assertEquals(100.0, records.get(0).getMeasurementValue()); // Validate first record
-    */
+
+        // * Validate size and contents of the returned list
+        assertEquals(2, records.size(), "Two records should be returned");
+        assertEquals(100.0, records.get(0).getMeasurementValue(), "First record value mismatch");
+        assertEquals(200.0, records.get(1).getMeasurementValue(), "Second record value mismatch");
     }
 }
+

@@ -60,4 +60,12 @@ public class Patient {
         }
         return recordsInRange;
     }
+
+    public void addRecord(PatientRecord record) {
+        this.patientRecords.add(record);
+    }
+
+    public int getPatientId() {
+        return patientId;
+    }
 }

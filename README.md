@@ -75,3 +75,12 @@ The UML class diagram and accompanying design explanation for this project can b
 - [DataGenerator_UML_ClassDiagram.pdf](./uml_models/DataGenerator_UML_ClassDiagram.pdf)
 - [EXPLANATION.txt](./uml_models/EXPLANATION.txt)
 
+## How to run?
+Using the terminal cmd:
+
+- HealthDataSimulator MAIN ---->
+java -jar target/cardio_generator-1.0-SNAPSHOT.jar HealthDataSimulator
+
+
+- DataStorage MAIN ----> 
+java -jar target/cardio_generator-1.0-SNAPSHOT.jar DataStorage
