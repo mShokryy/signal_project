@@ -89,7 +89,7 @@ java -jar target/cardio_generator-1.0-SNAPSHOT.jar DataStorage
 
 The code coverage reports and related documentation for this project can be found in the [`CodeCoverageDocumentation`](./signal_project/CodeCoverageDocumentation) directory.
 
-- [Coverage_Report.pdf](./signal_project/CodeCoverageDocumentation/Coverage_Report.pdf)
+- [Coverage_Report.pdf](.CodeCoverageDocumentation/Screenshot 2025-05-01 213651.png)
 - [README.txt](./signal_project/CodeCoverageDocumentation/README.txt)
 
 ---
