@@ -2,9 +2,11 @@ package com.alerts;
 
 // Represents an alert
 public class Alert {
+    public static final String UNTRIGGERED_ALERT = "UNTRIGGERED_ALERT";
+    public static final String TRIGGERED_ALERT = "TRIGGERED_ALERT";
     private String patientId;
     private String condition;
-    private long timestamp;
+    private static long timestamp;
 
     public Alert(String patientId, String condition, long timestamp) {
         this.patientId = patientId;
@@ -20,7 +22,7 @@ public class Alert {
         return condition;
     }
 
-    public long getTimestamp() {
+    public static long getTimestamp() {
         return timestamp;
     }
 }

@@ -4,6 +4,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import com.alerts.Alert;
 import com.cardio_generator.generators.AlertGenerator;
 
 import com.cardio_generator.generators.BloodPressureDataGenerator;
@@ -190,4 +191,23 @@ public class HealthDataSimulator {
     private static void scheduleTask(Runnable task, long period, TimeUnit timeUnit) {
         scheduler.scheduleAtFixedRate(task, random.nextInt(5), period, timeUnit);
     }
+
+    public void triggerAlert(String patientId) {
+        Alert alert = new Alert(
+                Alert.TRIGGERED_ALERT,
+                patientId,
+                System.currentTimeMillis()
+        );
+        com.alerts.AlertGenerator.throwImediateAlert(alert);  // Or however you're processing alerts
+    }
+
+    public void untriggerAlert(String patientId) {
+        Alert alert = new Alert(
+                Alert.UNTRIGGERED_ALERT,
+                patientId,
+                System.currentTimeMillis()
+        );
+        com.alerts.AlertGenerator.throwImediateAlert(alert);
+    }
+
 }

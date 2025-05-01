@@ -6,6 +6,9 @@ import com.data_management.PatientRecord;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 /**
  * The {@code AlertGenerator} class is responsible for monitoring patient data
@@ -16,6 +19,7 @@ import java.util.List;
 public class AlertGenerator {
     private DataStorage dataStorage;
     private Map<String, Boolean> alertStates;
+
 
     /**
      * Constructs an {@code AlertGenerator} with a specified {@code DataStorage}.
@@ -52,9 +56,29 @@ public class AlertGenerator {
         List<Double> systolicValues = new ArrayList<>();
         List<Double> diastolicValues = new ArrayList<>();
 
+        boolean hasLowSystolic = false;
+        boolean hasLowSaturation = false;
+
         for(PatientRecord record : patientRecords) {
             String type = record.getRecordType();
             double value = record.getMeasurementValue();
+
+
+          if(type.equals("Systolic") && value < 90) {
+              hasLowSystolic = true;
+          }
+
+          if(type.equals("Saturation") && value < 92) {
+              hasLowSaturation = true;
+          }
+
+          if(hasLowSystolic && hasLowSaturation) {
+              System.out.println("Hypotensive Hypoxemia Alert for patient: " + patientId);
+              alertNeeded = true;
+              break;
+          }
+
+
 
             // * I chose these criteria based ona forum on the internet with ref: https://www.verywellhealth.com/dangerous-heart-rate-5215509
             if (type.equals("HeartRate") && (value < 60 || value > 100)) {
@@ -76,20 +100,22 @@ public class AlertGenerator {
                 }
             }
 
-            boolean hasSaturation = false;
-
-            for (PatientRecord patientRecord : patientRecords) {
-                if ("Saturation".equals(patientRecord.getRecordType())) {
-                    hasSaturation = true;
-                    break;
-                }
-            }
-
-            if (!alertNeeded && hasSaturation && checkSaturationAlerts(patientRecords, patientId)) {
-                alertNeeded = true;
-            }
-
         }
+
+        boolean hasSaturation = false;
+
+        for (PatientRecord patientRecord : patientRecords) {
+            if ("Saturation".equals(patientRecord.getRecordType())) {
+                hasSaturation = true;
+                break;
+            }
+        }
+
+        if (!alertNeeded && hasSaturation && checkSaturationAlerts(patientRecords, patientId)) {
+            alertNeeded = true;
+        }
+
+
 
 
         if (!alertNeeded && hasTrendAlert(systolicValues)) {
@@ -114,6 +140,18 @@ public class AlertGenerator {
             alertStates.put(patientId, false);
             Alert alert = new Alert(patientId, "Alert RESOLVED: readings back to normal", timestamp);
             triggerAlert(alert);
+        }
+
+
+        List<Double> ecgValues = new ArrayList<>();
+        for (PatientRecord record : patientRecords) {
+            if ("ECG".equals(record.getRecordType())) {
+                ecgValues.add(record.getMeasurementValue());
+            }
+        }
+
+        if (!alertNeeded && hasEcgAlert(ecgValues, patientId)) {
+            alertNeeded = true;
         }
 
 
@@ -208,4 +246,55 @@ public class AlertGenerator {
         }
         return false;
     }
+
+    public static void throwImediateAlert(Alert alert) {
+        String patientId = alert.getPatientId();
+        String condition = alert.getCondition();
+        long timestamp = alert.getTimestamp();
+
+        String readableTime = Instant.ofEpochMilli(alert.getTimestamp())
+                .atZone(ZoneId.systemDefault())
+                .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        System.out.println(">> [ALERT BUTTON IS PUSHED!! ] " + alert.getPatientId() + ": " +
+                alert.getCondition() + " at " + readableTime);
+
+
+    }
+
+    /**
+     * Checks for ECG anomalies using a sliding average and threshold for spike detection.
+     *
+     * Choosing 1.2 and -0.4 as our thresholds (ASSUMPTION)
+     * Why? those values are based on characteristics of the ECGDataGenerator class
+     * Bigger than 1.2 is a spike above max Rwave and below -0.4 is a dip deeper.
+     *
+     *
+     * @param ecgValues the list of ECG values
+     * @return true if an ECG peak significantly deviates from the average
+     */
+    public boolean hasEcgAlert(List<Double> ecgValues, String patientId) {
+        // * Assumption: we choose 5 values just in case of the spike/anomaly detection is to reduce the chance of false positives.
+        if (ecgValues.size() < 5) return false;
+
+        double sum = 0;
+        for (double val : ecgValues) {
+            sum += val;
+        }
+
+        double average = sum / ecgValues.size();
+
+        for (double value : ecgValues) {
+            if (value > 1.2 || value < -0.4) {
+                System.out.println("ECG anomaly detected for patient: " + patientId);
+                return true;
+            }
+
+        }
+
+        return false;
+    }
+
 }
+
+

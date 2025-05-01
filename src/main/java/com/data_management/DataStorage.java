@@ -86,7 +86,7 @@ public class DataStorage {
      */
     public static void main(String[] args) {
         // the directory path where your data files are located
-        String dataDirectoryPath = "C:\\Users\\iikxq\\ken1520_2024";
+        String dataDirectoryPath = "C:\\Users\\iikxq\\ken1520_2024\\signal_project";
 
         // Using both FileDataReader and DataStorage
         DataStorage storage = new DataStorage();

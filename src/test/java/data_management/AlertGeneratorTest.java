@@ -1,5 +1,6 @@
 package data_management;
 
+import com.alerts.Alert;
 import com.alerts.AlertGenerator;
 import com.data_management.DataStorage;
 import com.data_management.Patient;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.*;
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
  * This test verifies that the alert generation logic behaves correctly under various
@@ -157,4 +159,76 @@ public class AlertGeneratorTest {
 
         Assertions.assertTrue(alertStates.getOrDefault("3", false), "Alert should be thrown for rapid saturation drop.");
     }
+
+    /**
+     * This test checks for both combined alerts of low blood oxygen and blood pressure.
+     */
+    @Test
+    public void testCombinedAlertLowBloodOxygenANDBloodPressure() {
+        long current = System.currentTimeMillis();
+        List<PatientRecord> records = Arrays.asList(new PatientRecord(6, 88, "Systolic", current - 20000), new PatientRecord(6, 90.5, "Saturation", current - 10000)
+        );
+        Patient patient = createPatientWithRecords(6, records);
+        alertGenerator.evaluateData(patient);
+        Assertions.assertTrue(alertStates.getOrDefault("6", false),
+                "Alert should be thrown for both low systolic pressure and low oxygen saturation.");
+    }
+
+    /**
+     * This test checks for false positive alerts
+     */
+    @Test
+    public void testNoAlertTriggered() {
+        long currentTime = System.currentTimeMillis();
+        List<PatientRecord> records = Arrays.asList(
+                new PatientRecord(7, 115, "Systolic", currentTime - 30000),
+                new PatientRecord(7, 75, "Diastolic", currentTime - 30000),
+                new PatientRecord(7, 98.0, "Saturation", currentTime - 30000),
+                new PatientRecord(7, 72, "HeartRate", currentTime - 30000)
+        );
+
+        Patient patient = createPatientWithRecords(7, records);
+        alertGenerator.evaluateData(patient);
+
+        assertFalse(alertStates.getOrDefault("7", false), "No alert should be thrown for normal readings.");
+    }
+
+    @Test
+    public void testButtonTriggeredAlert() {
+        String patientId = "patientID: 100";
+        long timeStamp = System.currentTimeMillis();
+        Alert manualAlert = new Alert(patientId, Alert.TRIGGERED_ALERT, timeStamp);
+
+        alertGenerator.throwImediateAlert(manualAlert);
+    }
+
+    @Test
+    public void testHasECGAlert_detectAboveThreshold() {
+        AlertGenerator alertGenerator = new AlertGenerator(null, null);
+        List<Double> ecgValues = Arrays.asList(0.2, 0.4,1.9, 5.5 , 7.0);
+        boolean result = alertGenerator.hasEcgAlert(ecgValues, "100");
+
+        Assertions.assertTrue(result, "ECG ABOVE THRESHOLD");}
+
+
+    @Test
+    public void testHasECGAlert_detectBelowThreshold() {
+        AlertGenerator alertGenerator = new AlertGenerator(null, null);
+        List<Double> ecgValues = Arrays.asList(0.2, 0.4, -0.5 , -3.9, -4.3);
+        boolean result = alertGenerator.hasEcgAlert(ecgValues, "100");
+
+            Assertions.assertTrue(result, "ECG BELOW THRESHOLD");}
+
+
+    @Test
+    void testHasEcgAlert_noAnomaly() {
+        AlertGenerator alertGenerator = new AlertGenerator(null, null);
+
+        List<Double> ecgValues = Arrays.asList(0.2, 0.4, 0.6, 0.3, 0.5);
+        boolean result = alertGenerator.hasEcgAlert(ecgValues, "100");
+
+        assertFalse(result, "No spikes detected in between thresholds. ");
+    }
 }
+
+
