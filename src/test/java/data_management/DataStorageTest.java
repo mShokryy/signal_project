@@ -1,6 +1,7 @@
 package data_management;
 
 import com.data_management.DataStorage;
+import com.data_management.Patient;
 import com.data_management.PatientRecord;
 import org.junit.jupiter.api.Test;
 
@@ -37,6 +38,24 @@ class DataStorageTest {
         assertEquals(2, records.size(), "Two records should be returned");
         assertEquals(100.0, records.get(0).getMeasurementValue(), "First record value mismatch");
         assertEquals(200.0, records.get(1).getMeasurementValue(), "Second record value mismatch");
+    }
+
+    @Test
+    public void testGetAllPatients() {
+        DataStorage storage = new DataStorage();
+
+        // Add data for two patients
+        storage.addPatientData(1, 98.6, "Temperature", 1700000000000L);
+        storage.addPatientData(2, 75, "HeartRate", 1700000000000L);
+
+        List<Patient> allPatients = storage.getAllPatients();
+
+        // There should be 2 patients stored
+        assertEquals(2, allPatients.size());
+
+        // IDs should match what was added
+        assertTrue(allPatients.stream().anyMatch(p -> p.getPatientId() == 1));
+        assertTrue(allPatients.stream().anyMatch(p -> p.getPatientId() == 2));
     }
 }
 
