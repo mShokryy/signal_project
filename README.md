@@ -85,7 +85,18 @@ java -jar target/cardio_generator-1.0-SNAPSHOT.jar HealthDataSimulator
 - DataStorage MAIN ----> 
 java -jar target/cardio_generator-1.0-SNAPSHOT.jar DataStorage
 
-## TestVerification & CodeCoverage
+## Code Coverage Documentation
 
-- [Code Coverage Documentation](signal_project/CodeCoverageDocumentation/)
-- [Unit Test Verification](signal_project/UnitTestVerification/)
+The code coverage reports and related documentation for this project can be found in the [`CodeCoverageDocumentation`](./signal_project/CodeCoverageDocumentation) directory.
+
+- [Coverage_Report.pdf](./signal_project/CodeCoverageDocumentation/Coverage_Report.pdf)
+- [README.txt](./signal_project/CodeCoverageDocumentation/README.txt)
+
+---
+
+## Unit Test Verification
+
+The unit test results and verification details are located in the [`UnitTestVerification`](./signal_project/UnitTestVerification) directory.
+
+- [Test_Results.log](./signal_project/UnitTestVerification/Test_Results.log)
+- [Verification_Notes.txt](./signal_project/UnitTestVerification/Verification_Notes.txt)
