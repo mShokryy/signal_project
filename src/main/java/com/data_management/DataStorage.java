@@ -16,13 +16,25 @@ import com.alerts.AlertGenerator;
 public class DataStorage {
     private Map<Integer, Patient> patientMap; // Stores patient objects indexed by their unique patient ID.
 
+    private static DataStorage instance;
+
+
     /**
      * Constructs a new instance of DataStorage, initializing the underlying storage
      * structure.
      */
-    public DataStorage() {
+    private DataStorage() {
         this.patientMap = new HashMap<>();
     }
+
+    public static DataStorage getInstance() {
+        if( instance == null ) {
+            instance = new DataStorage();
+        }
+        return instance;
+    }
+
+
 
 
     /**
@@ -48,6 +60,14 @@ public class DataStorage {
     }
 
     /**
+     * Clears all stored patient data. Primarily used for resetting state in unit tests.
+     * This method will be very helpful for unit testing.
+     */
+    public void clear() {
+        patientMap.clear();
+    }
+
+    /**
      * Retrieves a list of PatientRecord objects for a specific patient, filtered by
      * a time range.
      *
@@ -67,6 +87,8 @@ public class DataStorage {
         }
         return new ArrayList<>(); // return an empty list if no patient is found
     }
+
+
 
     /**
      * Retrieves a collection of all patients stored in the data storage.

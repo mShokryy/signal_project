@@ -36,7 +36,18 @@ public class HealthDataSimulator {
     private static ScheduledExecutorService scheduler;
     private static OutputStrategy outputStrategy = new ConsoleOutputStrategy(); // Default output strategy
     private static final Random random = new Random();
+    private static HealthDataSimulator instance;
 
+
+    private HealthDataSimulator() {
+    }
+
+    public static HealthDataSimulator getInstance() {
+        if (instance == null) {
+            instance = new HealthDataSimulator();
+        }
+        return instance;
+    }
 
     /**
      * The main method parses command line arguments,and it schedules
@@ -198,10 +209,10 @@ public class HealthDataSimulator {
                 patientId,
                 System.currentTimeMillis()
         );
-        com.alerts.AlertGenerator.throwImediateAlert(alert);  // Or however you're processing alerts
+        com.alerts.AlertGenerator.throwImediateAlert(alert);
     }
 
-    public void untriggerAlert(String patientId) {
+    public void untriggerdAlert(String patientId) {
         Alert alert = new Alert(
                 Alert.UNTRIGGERED_ALERT,
                 patientId,

@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * This test class verifies the functionality of the DataStorage class.
+ * This strategy class verifies the functionality of the DataStorage class.
  * It tests the ability to store patient data and retrieve it based on ID and time range.
  *
  * Assumptions:
@@ -25,8 +25,7 @@ class DataStorageTest {
      */
     @Test
     void testAddAndGetRecords() {
-        DataStorage storage = new DataStorage();
-
+        DataStorage storage = DataStorage.getInstance();
         // * Add two records for the same patient
         storage.addPatientData(1, 100.0, "WhiteBloodCells", 1714376789050L);
         storage.addPatientData(1, 200.0, "WhiteBloodCells", 1714376789051L);
@@ -40,10 +39,12 @@ class DataStorageTest {
         assertEquals(200.0, records.get(1).getMeasurementValue(), "Second record value mismatch");
     }
 
+    /**
+     * Tests if it correctly retrieves all the patients mentioned.
+     */
     @Test
     public void testGetAllPatients() {
-        DataStorage storage = new DataStorage();
-
+        DataStorage storage = DataStorage.getInstance();
         // Add data for two patients
         storage.addPatientData(1, 98.6, "Temperature", 1700000000000L);
         storage.addPatientData(2, 75, "HeartRate", 1700000000000L);

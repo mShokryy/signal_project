@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import java.util.*;
-import static org.junit.Assert.assertTrue;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 /**
- * This test verifies that the alert generation logic behaves correctly under various
+ * This strategy verifies that the alert generation logic behaves correctly under various
  * clinical conditions based on blood pressure readings.
  *
  * The alert system is expected to:
@@ -34,14 +34,12 @@ public class AlertGeneratorTest {
 
     private AlertGenerator alertGenerator;
     private Map<String, Boolean> alertStates;
-    private DataStorage tempStorage;
 
 
     @BeforeEach
     public void setUp() {
         alertStates = new HashMap<>();
-        tempStorage = new DataStorage();
-        alertGenerator = new AlertGenerator(tempStorage, alertStates);
+        DataStorage tempStorage = DataStorage.getInstance();        alertGenerator = new AlertGenerator(tempStorage, alertStates);
     }
 
     /**
@@ -161,7 +159,7 @@ public class AlertGeneratorTest {
     }
 
     /**
-     * This test checks for both combined alerts of low blood oxygen and blood pressure.
+     * This strategy checks for both combined alerts of low blood oxygen and blood pressure.
      */
     @Test
     public void testCombinedAlertLowBloodOxygenANDBloodPressure() {
@@ -175,7 +173,7 @@ public class AlertGeneratorTest {
     }
 
     /**
-     * This test checks for false positive alerts
+     * This strategy checks for false positive alerts
      */
     @Test
     public void testNoAlertTriggered() {

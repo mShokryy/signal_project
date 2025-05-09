@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 /**
- * This test class verifies the functionality of FileDataReader.
+ * This strategy class verifies the functionality of FileDataReader.
  * It checks whether data is correctly read from files under various conditions,
  * including valid data, empty files, missing directories, and weird content.
  *
@@ -25,7 +25,8 @@ class FileDataReaderTest {
     @BeforeEach
     void setUp() throws IOException {
         myPath = Files.createTempDirectory("test_data");
-        dataStorage = new DataStorage();
+        dataStorage = DataStorage.getInstance(); // Using the singleton call.
+        dataStorage.clear(); // Clear each record after testing.
     }
 
     @AfterEach

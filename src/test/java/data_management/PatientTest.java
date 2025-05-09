@@ -10,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Unit test for the Patient class.
+ * Unit strategy for the Patient class.
  * Verifies record addition and filtering based on timestamp range.
  */
 public class PatientTest {
