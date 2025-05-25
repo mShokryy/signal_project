@@ -1,10 +1,9 @@
 package com.data_management;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import com.alerts.AlertGenerator;
 
 /**
@@ -14,28 +13,29 @@ import com.alerts.AlertGenerator;
  * patient IDs.
  */
 public class DataStorage {
-    private Map<Integer, Patient> patientMap; // Stores patient objects indexed by their unique patient ID.
+    // Thread-safe patient map
+    private Map<Integer, Patient> patientMap = new ConcurrentHashMap<>();
 
     private static DataStorage instance;
-
 
     /**
      * Constructs a new instance of DataStorage, initializing the underlying storage
      * structure.
      */
     private DataStorage() {
-        this.patientMap = new HashMap<>();
+        // Already initialized above with ConcurrentHashMap
     }
 
     public static DataStorage getInstance() {
-        if( instance == null ) {
-            instance = new DataStorage();
+        if (instance == null) {
+            synchronized (DataStorage.class) {
+                if (instance == null) {
+                    instance = new DataStorage();
+                }
+            }
         }
         return instance;
     }
-
-
-
 
     /**
      * Adds or updates patient data in the storage.
@@ -51,12 +51,9 @@ public class DataStorage {
      *                         milliseconds since the Unix epoch
      */
     public void addPatientData(int patientId, double measurementValue, String recordType, long timestamp) {
-        Patient patient = patientMap.get(patientId);
-        if (patient == null) {
-            patient = new Patient(patientId);
-            patientMap.put(patientId, patient);
-        }
-        patient.addRecord(measurementValue, recordType, timestamp);
+        // Use atomic operation to get or create the patient
+        patientMap.computeIfAbsent(patientId, id -> new Patient(id))
+                .addRecord(measurementValue, recordType, timestamp);
     }
 
     /**
@@ -85,10 +82,8 @@ public class DataStorage {
         if (patient != null) {
             return patient.getRecords(startTime, endTime);
         }
-        return new ArrayList<>(); // return an empty list if no patient is found
+        return Collections.emptyList(); // immutable empty list
     }
-
-
 
     /**
      * Retrieves a collection of all patients stored in the data storage.
@@ -103,7 +98,7 @@ public class DataStorage {
      * The main method for the DataStorage class.
      * Initializes the system, reads data into storage, and continuously monitors
      * and evaluates patient data.
-     * 
+     *
      * @param args command line arguments
      */
     public static void main(String[] args) {
@@ -111,7 +106,7 @@ public class DataStorage {
         String dataDirectoryPath = "C:\\Users\\iikxq\\ken1520_2024\\signal_project";
 
         // Using both FileDataReader and DataStorage
-        DataStorage storage = new DataStorage();
+        DataStorage storage = DataStorage.getInstance();
         FileDataReader reader = new FileDataReader(dataDirectoryPath);
 
         try {
@@ -119,13 +114,12 @@ public class DataStorage {
 
             List<PatientRecord> records = storage.getRecords(1, 1700000000000L, 1800000000000L);
 
-            Map<String, Boolean> alertStates = new HashMap<>();
+            Map<String, Boolean> alertStates = new ConcurrentHashMap<>();
             AlertGenerator alertGenerator = new AlertGenerator(storage, alertStates);
 
             for (Patient patient : storage.getAllPatients()) {
                 alertGenerator.evaluateData(patient);
             }
-
         } catch (IOException e) {
             System.err.println("Error reading data: " + e.getMessage());
         }

@@ -25,6 +25,13 @@
             <version>1.5.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.java-websocket</groupId>
+            <artifactId>Java-WebSocket</artifactId>
+            <version>1.5.3</version>
+        </dependency>
+
+
         <!-- JUnit 4 (optional, remove if unused) -->
         <dependency>
             <groupId>junit</groupId>
